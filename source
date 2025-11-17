@@ -4439,8 +4439,9 @@ CMDs[#CMDs + 1] = {NAME = 'olddex / odex', DESC = 'Opens Old DEX by Moon'}
 CMDs[#CMDs + 1] = {NAME = 'remotespy / rspy', DESC = 'Opens Simple Spy V3'}
 CMDs[#CMDs + 1] = {NAME = 'audiologger / alogger', DESC = 'Opens Edges audio logger'}
 CMDs[#CMDs + 1] = {NAME = 'serverinfo / info', DESC = 'Gives you info about the server'}
-CMDs[#CMDs + 1] = {NAME = 'jobid', DESC = 'Copies the games JobId to your clipboard'}
+CMDs[#CMDs + 1] = {NAME = 'jobid [false/true]', DESC = 'Copies the games JobId to your clipboard'}
 CMDs[#CMDs + 1] = {NAME = 'notifyjobid', DESC = 'Notifies you the games JobId'}
+CMDs[#CMDs + 1] = {NAME = 'jobidtp / jobidteleport [JobId]', DESC = 'Joins the server matching the specified JobId within the same place'}
 CMDs[#CMDs + 1] = {NAME = 'rejoin / rj', DESC = 'Makes you rejoin the game'}
 CMDs[#CMDs + 1] = {NAME = 'autorejoin / autorj', DESC = 'Automatically rejoins the server if you get kicked/disconnected'}
 CMDs[#CMDs + 1] = {NAME = 'serverhop / shop', DESC = 'Teleports you to a different server'}
@@ -6888,7 +6889,11 @@ addcmd('serverinfo',{'info','sinfo'},function(args, speaker)
 end)
 
 addcmd("jobid", {}, function(args, speaker)
-    toClipboard("roblox://placeId=" .. PlaceId .. "&gameInstanceId=" .. JobId)
+    if args[1] == "true" then
+        toClipboard(JobId)
+    else
+        toClipboard("roblox://placeId=" .. PlaceId .. "&gameInstanceId=" .. JobId)
+    end
 end)
 
 addcmd('notifyjobid',{},function(args, speaker)
@@ -6901,6 +6906,12 @@ end)
 
 addcmd('gametp',{'gameteleport'},function(args, speaker)
 	TeleportService:Teleport(args[1])
+end)
+
+addcmd("jobidtp", {"jobidteleport"}, function(args, speaker)
+    pcall(function()
+        TeleportService:TeleportToPlaceInstance(PlaceId, args[1], Players.LocalPlayer)
+    end)
 end)
 
 addcmd("rejoin", {"rj"}, function(args, speaker)
