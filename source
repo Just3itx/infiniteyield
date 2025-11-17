@@ -4003,7 +4003,8 @@ eventEditor = (function()
 
                 eventF.EventName.Text = name
                     .. (
-                        #event.commands > 0 and ' (' .. #event.commands .. ')'
+                        #event.commands > 0
+                            and ' (' .. #event.commands .. ')'
                         or ''
                     )
 
@@ -6596,12 +6597,28 @@ function updatesaves()
             binds = binds or {},
             WayPoints = AllWaypoints,
             PluginsTable = PluginsTable,
-            currentShade1 = { currentShade1.R, currentShade1.G, currentShade1.B },
-            currentShade2 = { currentShade2.R, currentShade2.G, currentShade2.B },
-            currentShade3 = { currentShade3.R, currentShade3.G, currentShade3.B },
+            currentShade1 = {
+                currentShade1.R,
+                currentShade1.G,
+                currentShade1.B,
+            },
+            currentShade2 = {
+                currentShade2.R,
+                currentShade2.G,
+                currentShade2.B,
+            },
+            currentShade3 = {
+                currentShade3.R,
+                currentShade3.G,
+                currentShade3.B,
+            },
             currentText1 = { currentText1.R, currentText1.G, currentText1.B },
             currentText2 = { currentText2.R, currentText2.G, currentText2.B },
-            currentScroll = { currentScroll.R, currentScroll.G, currentScroll.B },
+            currentScroll = {
+                currentScroll.R,
+                currentScroll.G,
+                currentScroll.B,
+            },
             eventBinds = eventEditor.SaveData(),
         }
         writefileCooldown('IY_FE.iy', HttpService:JSONEncode(update))
@@ -12352,8 +12369,7 @@ addcmd('gametp', { 'gameteleport' }, function(args, speaker)
 end)
 
 addcmd('jobidtp', { 'jobidteleport' }, function(args, speaker)
-    local jobid = string.match(args[1], 'gameInstanceId=([%w%-]+)') or args[1]
-    TeleportService:TeleportToPlaceInstance(PlaceId, jobid, Players.LocalPlayer)
+    TeleportService:TeleportToPlaceInstance(PlaceId,string.match(args[1], 'gameInstanceId=([%w%-]+)') or args[1],Players.LocalPlayer)
 end)
 
 addcmd('rejoin', { 'rj' }, function(args, speaker)
@@ -13273,7 +13289,8 @@ addcmd('tweenwaypoint', { 'twp' }, function(args, speaker)
         end
         for i, _ in pairs(pWayPoints) do
             if
-                tostring(pWayPoints[i].NAME):lower() == tostring(WPName):lower()
+                tostring(pWayPoints[i].NAME):lower()
+                == tostring(WPName):lower()
             then
                 TweenService
                     :Create(
@@ -13311,7 +13328,8 @@ addcmd('walktowaypoint', { 'wtwp' }, function(args, speaker)
         end
         for i, _ in pairs(pWayPoints) do
             if
-                tostring(pWayPoints[i].NAME):lower() == tostring(WPName):lower()
+                tostring(pWayPoints[i].NAME):lower()
+                == tostring(WPName):lower()
             then
                 if
                     speaker.Character:FindFirstChildOfClass('Humanoid')
@@ -14314,7 +14332,8 @@ addcmd('freecamwaypoint', { 'fcwp' }, function(args, speaker)
         end
         for i, _ in pairs(pWayPoints) do
             if
-                tostring(pWayPoints[i].NAME):lower() == tostring(WPName):lower()
+                tostring(pWayPoints[i].NAME):lower()
+                == tostring(WPName):lower()
             then
                 StartFreecam(CFrame.new(pWayPoints[i].COORD[1].Position))
             end
@@ -15199,7 +15218,8 @@ addcmd('pathfindwalktowaypoint', { 'pathfindwalktowp' }, function(args, speaker)
         end
         for i, _ in pairs(pWayPoints) do
             if
-                tostring(pWayPoints[i].NAME):lower() == tostring(WPName):lower()
+                tostring(pWayPoints[i].NAME):lower()
+                == tostring(WPName):lower()
             then
                 if
                     speaker.Character:FindFirstChildOfClass('Humanoid')
@@ -16134,47 +16154,38 @@ addcmd(
     end
 )
 
-addcmd(
-    'loopnobgui',
-    {
-        'loopunbgui',
-        'loopnobillboardgui',
-        'loopunbillboardgui',
-        'loopnoname',
-        'looprohg',
-    },
-    function(args, speaker)
-        for i, v in pairs(speaker.Character:GetDescendants()) do
-            if v:IsA('BillboardGui') or v:IsA('SurfaceGui') then
-                v:Destroy()
-            end
+addcmd('loopnobgui', {
+    'loopunbgui',
+    'loopnobillboardgui',
+    'loopunbillboardgui',
+    'loopnoname',
+    'looprohg',
+}, function(args, speaker)
+    for i, v in pairs(speaker.Character:GetDescendants()) do
+        if v:IsA('BillboardGui') or v:IsA('SurfaceGui') then
+            v:Destroy()
         end
-        local function charPartAdded(part)
-            if part:IsA('BillboardGui') or part:IsA('SurfaceGui') then
-                wait()
-                part:Destroy()
-            end
-        end
-        charPartTrigger =
-            speaker.Character.DescendantAdded:Connect(charPartAdded)
     end
-)
+    local function charPartAdded(part)
+        if part:IsA('BillboardGui') or part:IsA('SurfaceGui') then
+            wait()
+            part:Destroy()
+        end
+    end
+    charPartTrigger = speaker.Character.DescendantAdded:Connect(charPartAdded)
+end)
 
-addcmd(
-    'unloopnobgui',
-    {
-        'unloopunbgui',
-        'unloopnobillboardgui',
-        'unloopunbillboardgui',
-        'unloopnoname',
-        'unlooprohg',
-    },
-    function(args, speaker)
-        if charPartTrigger then
-            charPartTrigger:Disconnect()
-        end
+addcmd('unloopnobgui', {
+    'unloopunbgui',
+    'unloopnobillboardgui',
+    'unloopunbillboardgui',
+    'unloopnoname',
+    'unlooprohg',
+}, function(args, speaker)
+    if charPartTrigger then
+        charPartTrigger:Disconnect()
     end
-)
+end)
 
 addcmd('spasm', {}, function(args, speaker)
     if not r15(speaker) then
