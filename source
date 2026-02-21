@@ -9058,6 +9058,7 @@ end)
 
 addcmd('tweengoto',{'tgoto','tto','tweento'},function(args, speaker)
 	local players = getPlayer(args[1], speaker)
+	execCmd('nosit')
 	for i,v in pairs(players)do
 		if Players[v].Character ~= nil then
 			if speaker.Character:FindFirstChildOfClass('Humanoid') and speaker.Character:FindFirstChildOfClass('Humanoid').SeatPart then
@@ -9067,6 +9068,7 @@ addcmd('tweengoto',{'tgoto','tto','tweento'},function(args, speaker)
 			TweenService:Create(getRoot(speaker.Character), TweenInfo.new(tweenSpeed, Enum.EasingStyle.Linear), {CFrame = getRoot(Players[v].Character).CFrame + Vector3.new(3,1,0)}):Play()
 		end
 	end
+	execCmd('unnosit')
 	execCmd('breakvelocity')
 end)
 
